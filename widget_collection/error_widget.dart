@@ -34,33 +34,37 @@ class ListItemGetter {
 
 
 class _ErrorViewState extends State<ErrorView> {
+  //init List 
   List<Errors> list;
+  // init a boolean isRequested. meaning that the database was not requested before
   bool isRequested=false;
+  //load database's data to List
   _commuicate() async{
     DatabaseCollection collection = new DatabaseCollection();
+    //when requesting, this bool's value is true in order not to access database repeatly
     isRequested=true;
     list = new List<Errors>();
-    
+    //wait list to fetch data. When complete, tell canvas to repaint listView
     list = await collection.getAllErrors().whenComplete(
         (){
+          //repaint
           _repaintListView();
         }
       );
-    
-    
   }
-
   _repaintListView(){
+    //build listView again in order to repaint it
     setState(() {
      build(context); 
     });
   }
-
-
   List<Widget> _getListData(){
+    //if requested before, aka repainting, no getting data in order to lock
+    //the database
     if(!isRequested){
        _commuicate();
     }
+    //convert list to widgets in order to paint on screen
     List<Widget> widgets = [];
     for (int i = 0; i < list.length; i++) {
       widgets.add(Padding(
