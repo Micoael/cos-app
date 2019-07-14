@@ -1,4 +1,3 @@
-import 'package:cos_method/page_collection/add_error.dart';
 import 'package:cos_method/widget_collection/error_widget.dart';
 import 'package:flutter/material.dart';
 

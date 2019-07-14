@@ -33,9 +33,9 @@ class DatabaseCollection{
   );
   return database;
  }
-/**
- * Insert an error
- */
+ ///
+ /// Insert an error
+ ///
  Future<void> insertError(Errors errors) async {
   final Database dbs = await getopenDatabase();
   await dbs.insert('errors', errors.toMap());
