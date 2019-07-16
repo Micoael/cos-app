@@ -1,41 +1,41 @@
-import 'package:cos_method/model/error.dart';
+import 'package:cos_method/model/star.dart';
 import 'package:cos_method/notifier/update_schedule.dart';
-import 'package:cos_method/page_collection/add_error.dart';
-import 'package:cos_method/page_collection/view_error.dart';
+import 'package:cos_method/page_collection/add_star.dart';
+import 'package:cos_method/page_collection/view_star.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../database/database.dart';
 
-class ErrorView extends StatefulWidget {
-  ErrorView({Key key}) : super(key: key);
+class StarView extends StatefulWidget {
+  StarView({Key key}) : super(key: key);
   @override
-  _ErrorViewState createState() => new _ErrorViewState();
+  _StarViewState createState() => new _StarViewState();
 }
 
 class ListItemGetter {
-  Errors error;
+  Stars star;
   int id;
   int level;
   String subject;
   String book;
   String name;
-  ListItemGetter(Errors error) {
-    this.id = error.id;
-    this.level = error.level;
-    this.book = error.book;
-    this.name = error.name;
-    this.subject = error.subject;
-    this.error = error;
+  ListItemGetter(Stars star) {
+    this.id = star.id;
+    this.level = star.level;
+    this.book = star.book;
+    this.name = star.name;
+    this.subject = star.subject;
+    this.star = star;
   }
 
-  Widget getWidget(Errors error, BuildContext context) {
+  Widget getWidget(Stars star, BuildContext context) {
     // return Container(
     //   child: Text("($id) \n $level※ \n $subject \n <<$book>> -- $name  "),
     // );
     return GestureDetector(
       onTap:  (){
         Navigator.of(context).push(MaterialPageRoute(
-        builder: (BuildContext context) => ViewErrors(error)));
+        builder: (BuildContext context) => ViewStars(star)));
       },
           child: Card(
           child: new Column(
@@ -74,9 +74,9 @@ class ListItemGetter {
   }
 }
 
-class _ErrorViewState extends State<ErrorView> {
+class _StarViewState extends State<StarView> {
   //init List
-  List<Errors> list=[];
+  List<Stars> list=[];
   // init a boolean isRequested. meaning that the database was not requested before
   bool isRequested = false;
   //widget list
@@ -86,14 +86,14 @@ class _ErrorViewState extends State<ErrorView> {
     DatabaseCollection collection = new DatabaseCollection();
     //when requesting, this bool's value is true in order not to access database repeatly
     isRequested = true;
-    list = new List<Errors>();
+    list = new List<Stars>();
     //wait list to fetch data. When complete, tell canvas to repaint listView
-    list = await collection.getAllErrors();
+    list = await collection.getAllStars();
   }
 
-  _navigateToDetails(BuildContext context, Errors error) {
+  _navigateToDetails(BuildContext context, Stars star) {
     Navigator.of(context).push(MaterialPageRoute(
-        builder: (BuildContext context) => ViewErrors(error)));
+        builder: (BuildContext context) => ViewStars(star)));
   }
 
   _repaintListView() {
@@ -114,7 +114,7 @@ class _ErrorViewState extends State<ErrorView> {
       for (int i = 0; i < list.length; i++) {
         widgets.add(ListTile(
             onTap: () => _navigateToDetails(context, list[i]),
-            //get the error instance to response to the click event
+            //get the star instance to response to the click event
             title: ListItemGetter(list[i]).getWidget(list[i], context)));
       }
       setState(() {
@@ -157,14 +157,12 @@ class _ErrorViewState extends State<ErrorView> {
           },
         ),
       ),
-      floatingActionButton: new FloatingActionButton(
-          child: new Icon(Icons.add), onPressed: fabPressed),
     );
   }
 
   void fabPressed() {
     Navigator.of(context)
-        .push(MaterialPageRoute(builder: (BuildContext context) => AddError(Errors(
+        .push(MaterialPageRoute(builder: (BuildContext context) => AddStar(Stars(
       ))));
   }
 }

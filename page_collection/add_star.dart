@@ -1,14 +1,14 @@
 import 'package:cos_method/database/database.dart';
-import 'package:cos_method/model/error.dart';
+import 'package:cos_method/model/star.dart';
 import 'package:cos_method/notifier/update_schedule.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class AddError extends StatefulWidget {
-  Errors error;
-  AddError(Errors error){
-    if(error == null){
-      error = new Errors(
+class AddStar extends StatefulWidget {
+  Stars star;
+  AddStar(Stars star){
+    if(star == null){
+      star = new Stars(
         id:0,
         level:4,
         book:"",
@@ -16,14 +16,14 @@ class AddError extends StatefulWidget {
         name:"",
       );
     }else{
-      this.error = error;
+      this.star = star;
     }
   }
   @override
-  _AddErrorState createState() => _AddErrorState();
+  _AddStarState createState() => _AddStarState();
 }
 
-class _AddErrorState extends State<AddError> {
+class _AddStarState extends State<AddStar> {
 
   
 
@@ -32,7 +32,7 @@ class _AddErrorState extends State<AddError> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar:AppBar(
-          title: Text('Add Error'),
+          title: Text('Add Star'),
         ),
         body: Theme(
             data: Theme.of(context).copyWith(primaryColor: Colors.green),
@@ -40,17 +40,17 @@ class _AddErrorState extends State<AddError> {
               padding: EdgeInsets.all(10.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[AddErrorForm(widget.error)],
+                children: <Widget>[AddStarForm(widget.star)],
               ),
             )));
   }
 }
 
-class AddErrorForm extends StatefulWidget {
-  Errors error;
-  AddErrorForm(Errors error){
-    if(error == null){
-      error = new Errors(
+class AddStarForm extends StatefulWidget {
+  Stars star;
+  AddStarForm(Stars star){
+    if(star == null){
+      star = new Stars(
         id:0,
         level:4,
         book:"",
@@ -58,26 +58,26 @@ class AddErrorForm extends StatefulWidget {
         name:"",
       );
     }else{
-      this.error = error;
+      this.star = star;
     }
   }
   
   @override
-  _AddErrorFormState createState() => _AddErrorFormState();
+  _AddStarFormState createState() => _AddStarFormState();
 }
 
-class _AddErrorFormState extends State<AddErrorForm> {
-  final addErrorFormKey = GlobalKey<FormState>();
+class _AddStarFormState extends State<AddStarForm> {
+  final addStarFormKey = GlobalKey<FormState>();
   String subject,book,name;
   int piority;
   double _piorityValue=0;
   
   
-  _addError(String name,subject,book , int level) async {
+  _addStar(String name,subject,book , int level) async {
       DatabaseCollection collection = new DatabaseCollection();
       await collection
-          .insertError(
-            Errors(
+          .insertStar(
+            Stars(
                 name: this.name,
                 subject: this.subject,
                 level: this.piority, 
@@ -88,12 +88,12 @@ class _AddErrorFormState extends State<AddErrorForm> {
 
   _summit(){
     
-    addErrorFormKey.currentState.save();
+    addStarFormKey.currentState.save();
   }
   @override
   Widget build(BuildContext context) {
     return Form(
-      key: addErrorFormKey,
+      key: addStarFormKey,
       child: Column(
         children: <Widget>[
           Container(
@@ -117,7 +117,7 @@ class _AddErrorFormState extends State<AddErrorForm> {
             )
           ),
           TextFormField(
-            initialValue: widget.error.subject,
+            initialValue: widget.star.subject,
             decoration: InputDecoration(
               icon: Icon(Icons.subject),
               labelText: 'Subjects',
@@ -129,7 +129,7 @@ class _AddErrorFormState extends State<AddErrorForm> {
           ),
           //TODO:build subject chip
           TextFormField(
-            initialValue: widget.error.book,
+            initialValue: widget.star.book,
             decoration: InputDecoration(
               icon: Icon(Icons.book),
               labelText: 'Book',
@@ -140,7 +140,7 @@ class _AddErrorFormState extends State<AddErrorForm> {
               },
           ),
           TextFormField(
-            initialValue: widget.error.name,
+            initialValue: widget.star.name,
             decoration: InputDecoration(
               icon: Icon(Icons.description),
               labelText: 'Description',
@@ -157,7 +157,7 @@ class _AddErrorFormState extends State<AddErrorForm> {
               child: Text('OK'), 
               onPressed: () {
                 _summit();
-                _addError(name, subject, book, piority);
+                _addStar(name, subject, book, piority);
                 Provider.of<UpdateManager>(context).refresh();
                 debugPrint("$piority and $subject and $name and $book");
                 Navigator.of(context).pop();

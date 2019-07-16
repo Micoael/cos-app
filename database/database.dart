@@ -1,21 +1,19 @@
 import 'dart:async';
 import 'package:cos_method/model/error.dart';
-import 'package:cos_method/model/question.dart';
+import 'package:cos_method/model/star.dart';
 import 'package:cos_method/model/todo.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 class DatabaseCollection{
-  /**
-   * The version of the database.
-   * 
-   */
-  final int version = 1;
+  /// The version of the database.
+  final int version = 5;
 
-  /**
-   * get an open database.
-   * If the database is not created before, it will
-   * init the database.
-   */
+  /// get an open database.
+
+  /// If the database is not created before, it will
+
+  /// init the database.
+
  getopenDatabase() async {
   final Future<Database> database = openDatabase(
     join(await getDatabasesPath(), 'cosapp_database.db'),
@@ -23,8 +21,8 @@ class DatabaseCollection{
     return db.execute(
       //create error table
       "CREATE TABLE errors(id INTEGER PRIMARY KEY, subject TEXT, level INTEGER, name TEXT, book TEXT);"+
-      //create questions table
-      "CREATE TABLE questions(id INTEGER PRIMARY KEY, subject TEXT, level INTEGER, name TEXT);"+
+      //create stars table
+      "CREATE TABLE stars(id INTEGER PRIMARY KEY, subject TEXT, level INTEGER, name TEXT , book TEXT);"+
       //create todos table
       "CREATE TABLE todos(id INTEGER PRIMARY KEY, rule TEXT, piority INTEGER, name TEXT)",
     );
@@ -42,15 +40,14 @@ class DatabaseCollection{
   }
 
 
-  /**
-   * Insert a question.
-   */
-  Future<void> insertQuestion(Questions questions) async {
+  /// Insert a star .
+
+  Future<void> insertStar(Stars stars) async {
   final Database db = await getopenDatabase();
   await db.insert(
     //table name
-    'questions',
-    questions.toMap(),
+    'stars',
+    stars.toMap(),
     conflictAlgorithm: ConflictAlgorithm.replace,
   );
   }
@@ -82,11 +79,11 @@ Future<List<Errors>> getAllErrors() async {
 }
 
 
-Future<List<Questions>> getAllQuestions() async {
+Future<List<Stars>> getAllStars() async {
   final Database db = await getopenDatabase();
-  final List<Map<String, dynamic>> maps = await db.query('questions');
+  final List<Map<String, dynamic>> maps = await db.query('stars');
   return List.generate(maps.length, (i) {
-    return Questions(
+    return Stars(
       id: maps[i]['id'],
       name: maps[i]['name'],
       level: maps[i]['level'],
@@ -118,10 +115,10 @@ Future<void> deleteError(int id) async {
   );
 }
 
-Future<void> deleteQuestion(int id) async {
+Future<void> deleteStar(int id) async {
   final database = await getopenDatabase();
   await database.delete(
-    'questions',
+    'stars',
     where: "id = ?",
     whereArgs: [id],
   );
@@ -148,13 +145,13 @@ Future<void> updateError(Errors error) async {
 }
 
 
-Future<void> updateQuestion(Questions question) async {
+Future<void> updateStar(Stars star) async {
   final db = await getopenDatabase();
   await db.update(
-    'questions',
-    question.toMap(),
+    'stars',
+    star.toMap(),
     where: "id = ?",
-    whereArgs: [question.id],
+    whereArgs: [star.id],
   );
 }
 

@@ -1,36 +1,36 @@
 import 'package:cos_method/database/database.dart';
-import 'package:cos_method/model/error.dart';
+import 'package:cos_method/model/star.dart';
 import 'package:cos_method/model/star.dart';
 import 'package:cos_method/notifier/update_schedule.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'add_error.dart';
+import 'add_star.dart';
 
-class ViewErrors extends StatefulWidget{
-  Errors error;
+class ViewStars extends StatefulWidget{
+  Stars star;
   int id;
   int level;
   String subject;
   String book;
   String name;
-  ViewErrors(Errors error){
-    this.id = error.id;
-    this.level = error.level;
-    this.book = error.book;
-    this.name = error.name;
-    this.subject = error.subject;
-    this.error = error;
+  ViewStars(Stars star){
+    this.id = star.id;
+    this.level = star.level;
+    this.book = star.book;
+    this.name = star.name;
+    this.subject = star.subject;
+    this.star = star;
   }
   
   @override
-  _ViewErrorsState createState() => _ViewErrorsState();
+  _ViewStarsState createState() => _ViewStarsState();
 }
 
-class _ViewErrorsState extends State<ViewErrors> {
-  _deleteErrorFromDataBase(){
+class _ViewStarsState extends State<ViewStars> {
+  _deleteStarFromDataBase(){
     DatabaseCollection collection = new DatabaseCollection();
-      collection.deleteError(widget.id);
+      collection.deleteStar(widget.id);
       return collection;
   }
     @override
@@ -45,7 +45,7 @@ class _ViewErrorsState extends State<ViewErrors> {
     }else{
       return new Scaffold(
         appBar: new AppBar(
-          title: new Text('Error #${widget.id}'),
+          title: new Text('Star #${widget.id}'),
           ),
         body:
           new Container(
@@ -81,26 +81,12 @@ class _ViewErrorsState extends State<ViewErrors> {
                   new IconButton(
                   icon: const Icon(Icons.settings),
                   onPressed: () { 
-                    _deleteErrorFromDataBase();
+                    _deleteStarFromDataBase();
                     Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (BuildContext context) => AddError(widget.error)));
+                      .push(MaterialPageRoute(builder: (BuildContext context) => AddStar(widget.star)));
                    },
                   ),
-                  new IconButton(
-                  icon: const Icon(Icons.collections_bookmark),
-                  onPressed: () { 
-                    _deleteErrorFromDataBase().insertStar(
-                      new Stars(
-                        level:widget.level,
-                        subject: widget.subject,
-                        book: widget.book,
-                        name:widget.name
-                      )
-                    );
-                    Navigator.of(context).pop();
-                    Provider.of<UpdateManager>(context).refresh();
-                   },
-                  ),
+                  
                 ]
     
               ),
@@ -109,7 +95,7 @@ class _ViewErrorsState extends State<ViewErrors> {
           ),
     
         floatingActionButton: new FloatingActionButton(
-          child: new Icon(Icons.done),
+          child: new Icon(Icons.delete),
           onPressed: fabPressed),
       );
     }
@@ -117,7 +103,7 @@ class _ViewErrorsState extends State<ViewErrors> {
     }
 
     void fabPressed() {
-      _deleteErrorFromDataBase();
+      _deleteStarFromDataBase();
       Provider.of<UpdateManager>(context).refresh();
       Navigator.of(context).pop();
     }

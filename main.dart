@@ -1,8 +1,17 @@
+import 'package:cos_method/notifier/update_schedule.dart';
 import 'package:cos_method/widget_collection/error_widget.dart';
+import 'package:cos_method/widget_collection/star_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(new MyApp());
+  runApp(MultiProvider(
+  providers: [
+    Provider<UpdateManager>.value(value: UpdateManager(false)),
+  ],
+  child: MyApp(),
+));
 }
 class MyApp extends StatelessWidget {
 
@@ -11,10 +20,10 @@ class MyApp extends StatelessWidget {
     return new MaterialApp(
       title: 'COS App',
       theme: new ThemeData(
-        primarySwatch: Colors.blue,
-        primaryColor: const Color(0xFF2196f3),
-        accentColor: const Color(0xFF2196f3),
-        canvasColor: const Color(0xFFfafafa),
+        primarySwatch: Colors.green,
+        primaryColor: Colors.green,
+        accentColor: Colors.greenAccent,
+        // canvasColor: const Color(0xFFfafafa),
       ),
       home: new MyHomePage(),
     );
@@ -42,7 +51,7 @@ class _MyHomePageState extends State<MyHomePage> {
     Widget build(BuildContext context) {
       final List<Widget> widgetList = [
         ErrorView(),
-        null,
+        StarView(),
         null,
         null,
         //TODO: Make the following 4 steps
@@ -56,9 +65,8 @@ class _MyHomePageState extends State<MyHomePage> {
         body: widgetList[_selectedItem],
         bottomNavigationBar: new BottomNavigationBar(
           onTap: _onTapHandler,
-          fixedColor: Colors.blueAccent,
-          backgroundColor: Colors.lightBlue,
-          unselectedItemColor: Colors.lightBlue,
+          fixedColor: Colors.green,
+          unselectedItemColor: Colors.green[800],
           type: BottomNavigationBarType.shifting,
           currentIndex: _selectedItem,
           items: [
@@ -69,8 +77,8 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
     
             new BottomNavigationBarItem(
-              icon: const Icon(Icons.question_answer),
-              title: new Text('Questions'),
+              icon: const Icon(Icons.favorite),
+              title: new Text('Favorite'),
             ),
     
             new BottomNavigationBarItem(
@@ -79,7 +87,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
     
             new BottomNavigationBarItem(
-              icon: const Icon(Icons.people),
+              icon: const Icon(Icons.person),
               title: new Text('Me'),
             )
           ]
