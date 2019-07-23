@@ -4,7 +4,7 @@ import 'package:cos_method/page_collection/add_error.dart';
 import 'package:cos_method/page_collection/view_error.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../database/database.dart';
+import '../helper/database.dart';
 
 class ErrorView extends StatefulWidget {
   ErrorView({Key key}) : super(key: key);
@@ -33,11 +33,11 @@ class ListItemGetter {
     //   child: Text("($id) \n $level※ \n $subject \n <<$book>> -- $name  "),
     // );
     return GestureDetector(
-      onTap:  (){
+      onTap: () {
         Navigator.of(context).push(MaterialPageRoute(
-        builder: (BuildContext context) => ViewErrors(error)));
+            builder: (BuildContext context) => ViewErrors(error)));
       },
-          child: Card(
+      child: Card(
           child: new Column(
               mainAxisAlignment: MainAxisAlignment.start,
               mainAxisSize: MainAxisSize.max,
@@ -76,11 +76,11 @@ class ListItemGetter {
 
 class _ErrorViewState extends State<ErrorView> {
   //init List
-  List<Errors> list=[];
+  List<Errors> list = [];
   // init a boolean isRequested. meaning that the database was not requested before
   bool isRequested = false;
   //widget list
-  List<Widget> widgets=[];
+  List<Widget> widgets = [];
   //load database's data to List
   Future _commuicate() async {
     DatabaseCollection collection = new DatabaseCollection();
@@ -100,11 +100,10 @@ class _ErrorViewState extends State<ErrorView> {
     //build listView again in order to repaint it
     setState(() {
       widgets = getListData();
-      
     });
   }
 
-  List<Widget> getListData(){
+  List<Widget> getListData() {
     return widgets;
   }
 
@@ -118,7 +117,7 @@ class _ErrorViewState extends State<ErrorView> {
             title: ListItemGetter(list[i]).getWidget(list[i], context)));
       }
       setState(() {
-       widgets = widgets; 
+        widgets = widgets;
       });
     });
   }
@@ -153,7 +152,7 @@ class _ErrorViewState extends State<ErrorView> {
           itemCount: list.isEmpty ? 0 : list.length,
           itemBuilder: (BuildContext context, int index) {
             ListItemGetter getter = new ListItemGetter(list[index]);
-            return getter.getWidget(list[index],context);
+            return getter.getWidget(list[index], context);
           },
         ),
       ),
@@ -163,8 +162,7 @@ class _ErrorViewState extends State<ErrorView> {
   }
 
   void fabPressed() {
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (BuildContext context) => AddError(Errors(
-      ))));
+    Navigator.of(context).push(MaterialPageRoute(
+        builder: (BuildContext context) => AddError(Errors())));
   }
 }

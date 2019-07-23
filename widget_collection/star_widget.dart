@@ -4,7 +4,7 @@ import 'package:cos_method/page_collection/add_star.dart';
 import 'package:cos_method/page_collection/view_star.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../database/database.dart';
+import '../helper/database.dart';
 
 class StarView extends StatefulWidget {
   StarView({Key key}) : super(key: key);
@@ -33,11 +33,11 @@ class ListItemGetter {
     //   child: Text("($id) \n $level※ \n $subject \n <<$book>> -- $name  "),
     // );
     return GestureDetector(
-      onTap:  (){
+      onTap: () {
         Navigator.of(context).push(MaterialPageRoute(
-        builder: (BuildContext context) => ViewStars(star)));
+            builder: (BuildContext context) => ViewStars(star)));
       },
-          child: Card(
+      child: Card(
           child: new Column(
               mainAxisAlignment: MainAxisAlignment.start,
               mainAxisSize: MainAxisSize.max,
@@ -76,11 +76,11 @@ class ListItemGetter {
 
 class _StarViewState extends State<StarView> {
   //init List
-  List<Stars> list=[];
+  List<Stars> list = [];
   // init a boolean isRequested. meaning that the database was not requested before
   bool isRequested = false;
   //widget list
-  List<Widget> widgets=[];
+  List<Widget> widgets = [];
   //load database's data to List
   Future _commuicate() async {
     DatabaseCollection collection = new DatabaseCollection();
@@ -92,19 +92,18 @@ class _StarViewState extends State<StarView> {
   }
 
   _navigateToDetails(BuildContext context, Stars star) {
-    Navigator.of(context).push(MaterialPageRoute(
-        builder: (BuildContext context) => ViewStars(star)));
+    Navigator.of(context).push(
+        MaterialPageRoute(builder: (BuildContext context) => ViewStars(star)));
   }
 
   _repaintListView() {
     //build listView again in order to repaint it
     setState(() {
       widgets = getListData();
-      
     });
   }
 
-  List<Widget> getListData(){
+  List<Widget> getListData() {
     return widgets;
   }
 
@@ -118,7 +117,7 @@ class _StarViewState extends State<StarView> {
             title: ListItemGetter(list[i]).getWidget(list[i], context)));
       }
       setState(() {
-       widgets = widgets; 
+        widgets = widgets;
       });
     });
   }
@@ -153,7 +152,7 @@ class _StarViewState extends State<StarView> {
           itemCount: list.isEmpty ? 0 : list.length,
           itemBuilder: (BuildContext context, int index) {
             ListItemGetter getter = new ListItemGetter(list[index]);
-            return getter.getWidget(list[index],context);
+            return getter.getWidget(list[index], context);
           },
         ),
       ),
@@ -161,8 +160,7 @@ class _StarViewState extends State<StarView> {
   }
 
   void fabPressed() {
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (BuildContext context) => AddStar(Stars(
-      ))));
+    Navigator.of(context).push(
+        MaterialPageRoute(builder: (BuildContext context) => AddStar(Stars())));
   }
 }

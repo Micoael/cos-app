@@ -13,3 +13,5 @@ class UpdateManager with ChangeNotifier {
   }
   get isUpdate => _isUpdate;
 }
+
+

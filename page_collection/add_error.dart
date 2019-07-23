@@ -1,4 +1,4 @@
-import 'package:cos_method/database/database.dart';
+import 'package:cos_method/helper/database.dart';
 import 'package:cos_method/model/error.dart';
 import 'package:cos_method/notifier/update_schedule.dart';
 import 'package:flutter/material.dart';
