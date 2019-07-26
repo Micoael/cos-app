@@ -10,6 +10,7 @@ void main() {
   runApp(MultiProvider(
     providers: [
       Provider<UpdateManager>.value(value: UpdateManager(false)),
+      Provider<ToDosAssetManager>.value(value: ToDosAssetManager(),),
     ],
     child: MyApp(),
   ));

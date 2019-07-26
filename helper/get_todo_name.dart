@@ -13,6 +13,9 @@ class GetToDoName{
       case 3: 
         return 'Not important but urgent';
         break;
+      case 4:
+        return 'Default missing!';
+        break;
       default:
         return 'No such name($x)! avaliable range is 0-3!';
         break;

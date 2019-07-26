@@ -43,11 +43,12 @@ class ToDoRules {
 
   setDone(ToDoRules rules) {
     if (isSingle) {
-      return RulesJson.getJson(rule: rules);
+      return rules;
     } else {
-      rules.lastDoneDate =
+      this.lastDoneDate =
           DateTime.now().toString().substring(0, 10); //2019-02-05
-      return RulesJson.getJson(rule: rules);
+      return /*RulesJson.getJson(rule: rules);*/
+        rules;
     }
   }
 

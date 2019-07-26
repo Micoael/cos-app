@@ -2,11 +2,12 @@ import 'dart:async';
 import 'package:cos_method/model/error.dart';
 import 'package:cos_method/model/star.dart';
 import 'package:cos_method/model/todo.dart';
+import 'package:flutter/foundation.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 class DatabaseCollection{
   /// The version of the database.
-  final int version = 6;
+  final int version = 10;
 
   /// get an open database.
 
@@ -24,12 +25,13 @@ class DatabaseCollection{
       //create stars table
       "CREATE TABLE stars(id INTEGER PRIMARY KEY, subject TEXT, level INTEGER, name TEXT , book TEXT);"+
       //create todos table
-      "CREATE TABLE todos(id INTEGER PRIMARY KEY, rule TEXT, name TEXT)",
+      "CREATE TABLE todos(id INTEGER PRIMARY KEY, piority INTEGER , rule TEXT, name TEXT)",
     );
     },
     onUpgrade: (db,v1,v2){
-      db.execute('DROP TABLE todos');
-      db.execute('CREATE TABLE todos(id INTEGER PRIMARY KEY, rule TEXT, name TEXT');
+      // db.execute('DROP TABLE todos');
+      // debugPrint('dropped!');
+      // db.execute('CREATE TABLE todos(id INTEGER PRIMARY KEY, piority INTEGER , rule TEXT, name TEXT)');
     },
     version: version
   );
@@ -96,19 +98,19 @@ Future<List<Stars>> getAllStars() async {
   });
 }
 
-Future<List<ToDos>> getAllToDos({String piorityLvl}) async {
+Future<List<ToDos>> getAllToDos() async {
   final Database db = await getopenDatabase();
-  final List<Map<String, dynamic>> maps = await db.query('todos',where: "piority = $piorityLvl");
-  
+  final List<Map<String, dynamic>> maps = await db.query('todos');
   return List.generate(maps.length, (i) {
-    return ToDos(
+    
+    ToDos todo =  ToDos(
       id: maps[i]['id'],
       name: maps[i]['name'],
       rule: maps[i]['rule'],
       piority: maps[i]['piority']
     );
-  });
-}
+    return todo;
+  });}
 
 
 Future<void> deleteError(int id) async {
