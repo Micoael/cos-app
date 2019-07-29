@@ -2,6 +2,7 @@ import 'package:cos_method/helper/database.dart';
 import 'package:cos_method/helper/get_todo_name.dart';
 import 'package:cos_method/model/todo.dart';
 import 'package:cos_method/notifier/update_schedule.dart';
+import 'package:cos_method/page_collection/add_todo.dart';
 import 'package:cos_method/page_collection/view_todo.dart';
 import 'package:flutter/material.dart';
 
@@ -86,6 +87,8 @@ class _ToDoWidgetState extends State<ToDoWidget> {
     });
     DatabaseCollection dbc = new DatabaseCollection();
     dbc.insertToDo(tds);
+    Navigator.of(context).push(MaterialPageRoute(
+        builder: (BuildContext context) => AddToDoPage()));
   }
 }
 

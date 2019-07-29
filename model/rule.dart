@@ -52,10 +52,10 @@ class ToDoRules {
     }
   }
 
-  toVisibleCharts(List<dynamic> repeat) {
+  static toVisibleCharts(List<dynamic> repeat) {
     int offset = 0;
     List<String> resultArray = [];
-    String wrongMsg;
+    String wrongMsg="";
     bool isWrong = false;
     StringBuffer buff = new StringBuffer();
     try {
