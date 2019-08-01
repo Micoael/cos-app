@@ -1,6 +1,8 @@
 import 'dart:convert';
 
+import 'package:cos_method/helper/database.dart';
 import 'package:flutter/material.dart';
+import 'package:sqflite/sqflite.dart';
 
 class ToDoRules {
   bool isSingle;
@@ -16,7 +18,7 @@ class ToDoRules {
   /// in all, it will look like this:
   /// `√ √ X √ X X X X`
   List<dynamic> repeat = [];
-  ToDoRules({bool isSingle, String startTime, endTime, List<dynamic> repeat}) {
+  ToDoRules({bool isSingle, String startTime,String endTime, List<dynamic> repeat}) {
     if (isSingle) {
       this.isSingle = true;
       this.repeat = [
@@ -24,8 +26,8 @@ class ToDoRules {
       ];
       this.startTime = DateTime.now().toString().substring(0, 10);
       this.endTime = DateTime.now().toString().substring(0, 10);
-      startDate = DateTime.parse(startTime);
-      endDate = DateTime.parse(endTime);
+      startDate = DateTime.parse(this.startTime);
+      endDate = DateTime.parse(this.endTime);
     } else {
       startDate = DateTime.parse(startTime);
       endDate = DateTime.parse(endTime);
@@ -112,9 +114,13 @@ class ToDoRules {
 
 class RulesJson {
   static ToDoRules formJson(String jsonStr) {
-    Map userMap = jsonDecode(jsonStr);
+    try{
+      Map userMap = jsonDecode(jsonStr);
     ToDoRules result = new ToDoRules.fromJson(userMap);
     return result;
+    }catch (FormatException){
+      debugPrint('Sorry! wrong format!');
+    }
   }
 
   static String getJson({ToDoRules rule}) {

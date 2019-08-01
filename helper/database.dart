@@ -5,9 +5,11 @@ import 'package:cos_method/model/todo.dart';
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+// cc token 1ot1q5ffcf5k274hjb7d8qupc39bbmat5dcsib6
+// ct       3dvuphnamsqkomm0o3cng2mdndp8nff1s92jqpf
 class DatabaseCollection{
   /// The version of the database.
-  final int version = 10;
+  final int version = 11;
 
   /// get an open database.
 
@@ -19,19 +21,14 @@ class DatabaseCollection{
   final Future<Database> database = openDatabase(
     join(await getDatabasesPath(), 'cosapp_database.db'),
     onCreate: (db, version) {
-    return db.execute(
-      //create error table
-      "CREATE TABLE errors(id INTEGER PRIMARY KEY, subject TEXT, level INTEGER, name TEXT, book TEXT);"+
-      //create stars table
-      "CREATE TABLE stars(id INTEGER PRIMARY KEY, subject TEXT, level INTEGER, name TEXT , book TEXT);"+
-      //create todos table
-      "CREATE TABLE todos(id INTEGER PRIMARY KEY, piority INTEGER , rule TEXT, name TEXT)",
-    );
+      db.execute("CREATE TABLE errors(id INTEGER PRIMARY KEY, subject TEXT, level INTEGER, name TEXT, book TEXT)");
+      db.execute("CREATE TABLE stars(id INTEGER PRIMARY KEY, subject TEXT, level INTEGER, name TEXT , book TEXT)");
+      db.execute("CREATE TABLE todos(id INTEGER PRIMARY KEY, piority INTEGER , rule TEXT, name TEXT)");
     },
     onUpgrade: (db,v1,v2){
-      // db.execute('DROP TABLE todos');
-      // debugPrint('dropped!');
-      // db.execute('CREATE TABLE todos(id INTEGER PRIMARY KEY, piority INTEGER , rule TEXT, name TEXT)');
+       db.execute('DROP TABLE todos');
+       debugPrint('dropped!');
+      db.execute('CREATE TABLE todos(id INTEGER PRIMARY KEY, piority INTEGER , rule TEXT, name TEXT)');
     },
     version: version
   );

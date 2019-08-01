@@ -34,7 +34,6 @@ class _ToDoWidgetState extends State<ToDoWidget> {
             else{
               List<List<ToDos>> i = snapshot.data;
               parceledList = snapshot.data;
-              debugPrint(i[4][1].rule);
               return showMainMenu(context,snapshot);
             }
               
@@ -82,11 +81,7 @@ class _ToDoWidgetState extends State<ToDoWidget> {
 
 
   _tryAdd(){
-    setState(() {
-      
-    });
-    DatabaseCollection dbc = new DatabaseCollection();
-    dbc.insertToDo(tds);
+   
     Navigator.of(context).push(MaterialPageRoute(
         builder: (BuildContext context) => AddToDoPage()));
   }

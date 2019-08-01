@@ -1,7 +1,12 @@
+import 'package:cos_method/helper/database.dart';
 import 'package:cos_method/helper/rule_corvent.dart';
 import 'package:cos_method/model/rule.dart';
+import 'package:cos_method/model/todo.dart';
+import 'package:cos_method/notifier/update_schedule.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:sqflite/sqflite.dart';
 
 class AddToDoPage extends StatefulWidget {
   @override
@@ -15,15 +20,18 @@ class _AddToDoPageState extends State<AddToDoPage> {
   final addToDosFormKey2 = GlobalKey<FormState>();
   final addRepeatFormKey = GlobalKey<FormState>();
   String singleName;
-  int singleAxis;
+  int singleAxis = 1;
   //---single rule is generated.---
   String multiName;
-  int multiAxis;
+  int multiAxis = 1;
   List<dynamic> multiRepeatList = [[0,0]];
   String multiStartDate;
   String multiEndDate = "2001-01-01";
   int duration;
   int last;
+  //-------
+  bool hasPopError = false;
+  double _piorityValue = 1.0;
 
 
   @override
@@ -154,7 +162,6 @@ class _AddToDoPageState extends State<AddToDoPage> {
   }
 
   _singlePageBuilder(BuildContext context) {
-    double _piorityValue = 1;
     return Form(
       key: addToDosFormKey,
       child: Column(
@@ -169,7 +176,9 @@ class _AddToDoPageState extends State<AddToDoPage> {
             value: _piorityValue,
             onChanged: (value) {
               setState(() {
-                value = _piorityValue;
+                debugPrint('$_piorityValue');
+                _piorityValue = value;
+                singleAxis = value.toInt();
               });
               singleAxis = value.toInt();
             },
@@ -194,6 +203,7 @@ class _AddToDoPageState extends State<AddToDoPage> {
               child: Text('OK'),
               onPressed: () {
                 _summit();
+                _save(0);
               },
             ),
           ),
@@ -203,7 +213,6 @@ class _AddToDoPageState extends State<AddToDoPage> {
   }
 
   _multiPageBuilder(BuildContext context) {
-    double _piorityValue = 1;
     return Form(
       key: addToDosFormKey2,
       child: Column(
@@ -219,7 +228,8 @@ class _AddToDoPageState extends State<AddToDoPage> {
             value: _piorityValue,
             onChanged: (value) {
               setState(() {
-                value = _piorityValue;
+                _piorityValue = value;
+                multiAxis = value.toInt();
               });
               multiAxis = value.toInt();
             },
@@ -249,7 +259,11 @@ class _AddToDoPageState extends State<AddToDoPage> {
                 hintText: 'The duration of the tips',
               ),
               onSaved: (value) {
-                duration = int.parse(value);
+                try {
+                  duration = int.parse(value);
+                }  catch (FormatException) {
+                  _openAlertDialog("Invalid number");
+                }
               },
             ),
           ),
@@ -262,7 +276,11 @@ class _AddToDoPageState extends State<AddToDoPage> {
                 hintText: 'How long does it lasts?',
               ),
               onSaved: (value) {
-                last = int.parse(value);
+                try {
+                  last = int.parse(value);
+                } on FormatException catch (e) {
+                   _openAlertDialog("Invalid number");
+                }
               },
             ),
           ),
@@ -281,10 +299,10 @@ class _AddToDoPageState extends State<AddToDoPage> {
                       debugPrint('done!');
                       debugPrint(ToDoRules.toVisibleCharts(multiRepeatList));
                     }else{
-                      debugPrint('not right!');
+                      _openAlertDialog("The duration must be bigger than last!");
                     }
                   } else {
-                    debugPrint('not right!');
+                    _openAlertDialog("All the numbers must be positive");
                   }
                 },
               ),
@@ -304,8 +322,7 @@ class _AddToDoPageState extends State<AddToDoPage> {
                 onPressed: () {
                   setState(() {});
                   addToDosFormKey2.currentState.save();
-                  //TODO: Hey, Visual Studio Code, refactor me the code!
-                  //TODO: wtite the database communication for me plz!
+                  _save(1);
                 },
               ),
 
@@ -316,4 +333,66 @@ class _AddToDoPageState extends State<AddToDoPage> {
     );
     
   }
+
+
+  _openAlertDialog(String msg){
+    if(!hasPopError){
+      hasPopError = true;
+      showDialog(
+      context: context,
+      builder: (BuildContext context){
+        return AlertDialog(
+        title: Text("Error occoured!"),
+        content: Text("$msg"),
+        actions: <Widget>[
+          OutlineButton(onPressed: (){
+            Navigator.of(context).pop();
+            hasPopError = false;
+          },child: Text("OK"),)
+        ],
+      );
+      },
+    );
+    }
+  }
+
+  /// if it is mutiple,then go on to mp page
+  _save(int isMutiple){
+    if(isMutiple==0){
+      //single addition
+       ToDoRules rules = new ToDoRules(
+        isSingle: true,
+      );
+      String ruleJson = RulesJson.getJson(rule: rules);
+      ToDos toDos = new ToDos(
+        piority: singleAxis,
+        name: singleName,
+        rule:ruleJson,
+      );
+      DatabaseCollection dbc = new DatabaseCollection();
+      dbc.insertToDo(toDos);
+      Provider.of<UpdateManager>(context).refresh();
+      print('done! ');
+    }else{
+      //mutiple
+      ToDoRules rules = new ToDoRules(
+        isSingle: false,
+        startTime: DateTime.now().toString().substring(0,10),
+        endTime: multiEndDate,
+        repeat: multiRepeatList,
+      );
+      String ruleJson = RulesJson.getJson(rule: rules);
+      ToDos toDos = new ToDos(
+        piority: multiAxis,
+        name: multiName,
+        rule:ruleJson,
+      );
+      DatabaseCollection dbc = new DatabaseCollection();
+      dbc.insertToDo(toDos);
+      Provider.of<UpdateManager>(context).refresh();
+      print('done!');
+    }
+  }
+
+
 }
