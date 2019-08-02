@@ -1,6 +1,7 @@
 import 'package:cos_method/model/rule.dart';
 import 'package:cos_method/model/todo.dart';
 import 'package:cos_method/notifier/update_schedule.dart';
+import 'package:cos_method/page_collection/view_todo_item.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -16,16 +17,18 @@ class ToDoViewer extends StatefulWidget {
 }
 
 class _ToDoViewerState extends State<ToDoViewer> {
-  int id;
+  int id=0;
   List<List<ToDos>> parceledList;
   @override
   Widget build(BuildContext context) {
-    id = widget.id;
+     id = widget.id;
     if (Provider.of<UpdateManager>(context).isUpdate) {
+      Provider.of<UpdateManager>(context).understood();
       return _fetchDataWithAsync(context);
     } else {
       return _buildWithParceledData(context);
     }
+    
   }
 
   _fetchDataWithAsync(BuildContext context) {
@@ -99,14 +102,16 @@ class _ToDoViewerState extends State<ToDoViewer> {
   }
 
   _buildListView(int index, BuildContext context) {
+    debugPrint('execute repaint at view_todo!');
     List<ToDos> targetList=[];
-    if(parceledList!=null){
-      targetList = ToDoItemFilter.clean(widget.parceledList)[index];
+    if(widget.parceledList!=null){
+      targetList = ToDoItemFilter().clean(widget.parceledList)[index];
       return ListView.builder(
       itemCount: targetList.length,
       itemBuilder: (context, position) {
-        return Text(
-            '${targetList[position].name}${_temp_displayText(_displayDecoder(targetList[position].rule))}');
+        return _buildGridGraph(index, context, targetList, position);
+        // return Text(
+        //     '${targetList[position].name}${_temp_displayText(_displayDecoder(targetList[position].rule))}');
       },
     );
     }else{
@@ -123,22 +128,48 @@ class _ToDoViewerState extends State<ToDoViewer> {
   _displayDecoder(String rules) {
     return RulesJson.formJson(rules);
   }
+
+  _buildGridGraph(int index, BuildContext context,List<ToDos> targetList,int position){
+    // a single builder...
+    return InkWell(
+      child: 
+        Card(
+          child: Container(
+            alignment: Alignment.center,
+            child: Text("[${targetList[position].id}] => ${targetList[position].name}"),
+          ),
+        ),
+      onTap: (){
+        ToDos todo = targetList[position];
+         Navigator.of(context).push(MaterialPageRoute(
+                builder: (BuildContext context) => ViewToDoItem(id: todo.id,name: todo.name,rule: todo.rule,piority: todo.piority,)));
+      },
+    );
+  }
+
+
+
 }
 
 
 
 class ToDoItemFilter{
-  static clean(List<List<ToDos>> toBeCleaned){
     List<List<ToDos>> cleaned =[];
+   
+   clean(List<List<ToDos>> toBeCleaned){
     for (var i = 0; i < 5; i++) {
+      List<ToDos> todos = [];
       for (var j = 0; j < toBeCleaned[i].length; j++) {
-        List<ToDos> todos = [];
+         
         if(PraseNewToDo().isDisplayToday(toBeCleaned[i][j])){
           todos.add(toBeCleaned[i][j]);
         }
-        cleaned.add(todos);
       }
+      final List<ToDos> q = todos;
+      cleaned.add(q);
+      todos = [];
     }
+   
     return cleaned;
   }
 }

@@ -61,7 +61,6 @@ class ToDosAssetManager with ChangeNotifier {
         _pickData();
         notifyListeners();
       });
-      debugPrint(listOfAll.toString());
       List<List<ToDos>> returnVal = [listOf0,listOf1,listOf2,listOf3,listOfDefault];
       return returnVal;
     }
