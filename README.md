@@ -2,8 +2,8 @@
 An app that is based on my learning method
 
 ##Features
--WrongBook
---Wrongbook favorites
--ToDoList
--DayCounter
--CalculationExercise
+- WrongBook
+-- Wrongbook favorites
+- ToDoList
+- DayCounter(NOT completed)
+- CalculationExercise(NOT completed)
