@@ -2,7 +2,7 @@
 An app that is based on my learning method
 
 ##Features
-- WrongBook
+[√] WrongBook
 -- Wrongbook favorites
 - ToDoList
 - DayCounter(NOT completed)
