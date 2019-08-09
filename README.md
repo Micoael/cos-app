@@ -2,7 +2,7 @@
 An app that is based on my learning method
 
 ## Progress
-  [>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>oooooooooooooooo]()60%
+  [>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>]()ooooo 80%
 
 
 ## Features
