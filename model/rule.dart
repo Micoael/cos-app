@@ -102,6 +102,10 @@ class ToDoRules {
         lastDoneDate = json['lastDoneDate'] as String;
 
   Map toJson() {
+    if(startDate==null || endDate==null){
+      startDate = DateTime(2000);
+      endDate = DateTime(2000);
+    }
     Map map = new Map();
     map['isSingle'] = this.isSingle;
     map['startTime'] = this.startDate.toString().substring(0, 10);

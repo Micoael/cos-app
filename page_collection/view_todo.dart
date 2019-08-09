@@ -17,18 +17,19 @@ class ToDoViewer extends StatefulWidget {
 }
 
 class _ToDoViewerState extends State<ToDoViewer> {
-  int id=0;
+  int id = 0;
   List<List<ToDos>> parceledList;
   @override
   Widget build(BuildContext context) {
-     id = widget.id;
+    id = widget.id;
     if (Provider.of<UpdateManager>(context).isUpdate) {
-      Provider.of<UpdateManager>(context).understood();
+      debugPrint("updated!");
+      //Update understood here
       return _fetchDataWithAsync(context);
     } else {
+      debugPrint("not updated!");
       return _buildWithParceledData(context);
     }
-    
   }
 
   _fetchDataWithAsync(BuildContext context) {
@@ -44,6 +45,7 @@ class _ToDoViewerState extends State<ToDoViewer> {
             if (snapshot.hasError)
               return new Text('Error: ${snapshot.error}');
             else {
+              parceledList = [];
               parceledList = snapshot.data;
               return _buildWithParceledData(context);
             }
@@ -102,66 +104,112 @@ class _ToDoViewerState extends State<ToDoViewer> {
   }
 
   _buildListView(int index, BuildContext context) {
-    debugPrint('execute repaint at view_todo!');
-    List<ToDos> targetList=[];
-    if(widget.parceledList!=null){
+    debugPrint('executing repaint at view_todo!');
+
+    List<ToDos> targetList = [];
+
+    //TODO: fix this.
+
+    if (Provider.of<UpdateManager>(context).isUpdate) {
+      
+      targetList = ToDoItemFilter().clean(parceledList)[index];
+      Provider.of<UpdateManager>(context).understood();
+    } else {
       targetList = ToDoItemFilter().clean(widget.parceledList)[index];
-      return ListView.builder(
-      itemCount: targetList.length,
-      itemBuilder: (context, position) {
-        return _buildGridGraph(index, context, targetList, position);
-        // return Text(
-        //     '${targetList[position].name}${_temp_displayText(_displayDecoder(targetList[position].rule))}');
-      },
-    );
-    }else{
-      return new Text("add first!");
     }
-    
-   
+    if (targetList.length == 0) {
+      // execute add first
+      return new Text("Nothing yet!");
+    } else {
+      // show normal build
+      return ListView.builder(
+        itemCount: targetList.length,
+        itemBuilder: (context, position) {
+          return _buildGridGraph(index, context, targetList, position);
+          // return Text(
+          //     '${targetList[position].name}${_temp_displayText(_displayDecoder(targetList[position].rule))}');
+        },
+      );
+    }
   }
 
-  _temp_displayText(ToDoRules rules) {
-    return "${rules.isSingle}";
-  }
+  
 
-  _displayDecoder(String rules) {
-    return RulesJson.formJson(rules);
-  }
+ 
 
-  _buildGridGraph(int index, BuildContext context,List<ToDos> targetList,int position){
+  _buildGridGraph(
+      int index, BuildContext context, List<ToDos> targetList, int position) {
     // a single builder...
     return InkWell(
-      child: 
-        Card(
-          child: Container(
-            alignment: Alignment.center,
-            child: Text("[${targetList[position].id}] => ${targetList[position].name}"),
+      child: new Card(key: null,
+            child:
+              Padding(
+                padding: const EdgeInsets.all(6.0),
+                child: new Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.max,
+                  children: <Widget>[
+                    new Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        new Icon(
+                          Icons.today,
+                          color: const Color(0xFF000000), 
+                          size: 28.0),
+    
+                        new Text(
+                        "${targetList[position].id}",
+                          style: new TextStyle(fontSize:12.0,
+                          color: const Color(0xFF000000),
+                          fontWeight: FontWeight.w600,
+                          fontFamily: "Roboto"),
+                        )
+                      ]
+    
+                    ),
+    
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: new Text(
+                      "${targetList[position].name}",
+                        style: new TextStyle(fontSize:12.0,
+                        color: const Color(0xFF000000),
+                        fontWeight: FontWeight.w300,
+                        fontFamily: "Roboto"),
+                      ),
+                    )
+                  ]
+    
+                ),
+              ),
+    
           ),
-        ),
-      onTap: (){
+    
+      
+      onTap: () {
         ToDos todo = targetList[position];
-         Navigator.of(context).push(MaterialPageRoute(
-                builder: (BuildContext context) => ViewToDoItem(id: todo.id,name: todo.name,rule: todo.rule,piority: todo.piority,)));
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (BuildContext context) => ViewToDoItem(
+                  id: todo.id,
+                  name: todo.name,
+                  rule: todo.rule,
+                  piority: todo.piority,
+                )));
       },
     );
   }
-
-
-
 }
 
+class ToDoItemFilter {
+  List<List<ToDos>> cleaned = [];
 
-
-class ToDoItemFilter{
-    List<List<ToDos>> cleaned =[];
-   
-   clean(List<List<ToDos>> toBeCleaned){
+  clean(List<List<ToDos>> toBeCleaned) {
     for (var i = 0; i < 5; i++) {
       List<ToDos> todos = [];
       for (var j = 0; j < toBeCleaned[i].length; j++) {
-         
-        if(PraseNewToDo().isDisplayToday(toBeCleaned[i][j])){
+        if (PraseNewToDo().isDisplayToday(toBeCleaned[i][j])) {
           todos.add(toBeCleaned[i][j]);
         }
       }
@@ -169,7 +217,7 @@ class ToDoItemFilter{
       cleaned.add(q);
       todos = [];
     }
-   
+
     return cleaned;
   }
 }

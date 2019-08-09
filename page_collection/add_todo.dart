@@ -357,7 +357,7 @@ class _AddToDoPageState extends State<AddToDoPage> {
   }
 
   /// if it is mutiple,then go on to mp page
-  _save(int isMutiple){
+  _save(int isMutiple) async {
     if(isMutiple==0){
       //single addition
        ToDoRules rules = new ToDoRules(
@@ -370,8 +370,10 @@ class _AddToDoPageState extends State<AddToDoPage> {
         rule:ruleJson,
       );
       DatabaseCollection dbc = new DatabaseCollection();
-      dbc.insertToDo(toDos);
-      Provider.of<UpdateManager>(context).refresh();
+      await dbc.insertToDo(toDos).whenComplete((){
+        Provider.of<UpdateManager>(context).refresh();
+      });
+      
       print('done! ');
     }else{
       //mutiple
@@ -388,8 +390,10 @@ class _AddToDoPageState extends State<AddToDoPage> {
         rule:ruleJson,
       );
       DatabaseCollection dbc = new DatabaseCollection();
-      dbc.insertToDo(toDos);
-      Provider.of<UpdateManager>(context).refresh();
+      await dbc.insertToDo(toDos).whenComplete((){
+        Provider.of<UpdateManager>(context).refresh();
+      });
+      
       print('done!');
     }
   }
