@@ -1,5 +1,6 @@
 import 'package:cos_method/notifier/update_schedule.dart';
 import 'package:cos_method/widget_collection/error_widget.dart';
+import 'package:cos_method/widget_collection/me_widget.dart';
 import 'package:cos_method/widget_collection/star_widget.dart';
 import 'package:cos_method/widget_collection/todo_widget.dart';
 import 'package:flutter/material.dart';
@@ -52,7 +53,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ErrorView(),
       StarView(),
       ToDoWidget(),
-      null,
+      MeWidget(),
       //TODO: Make the following 4 steps
     ];
 

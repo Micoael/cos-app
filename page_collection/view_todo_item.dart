@@ -78,23 +78,25 @@ class _ViewToDoItemState extends State<ViewToDoItem> {
   }
 
   void setToDoAsDone() async {
-    if(RulesJson.formJson(obj.rule).isSingle){
-      _deleteToDoFromDataBase();
-      Navigator.of(context).pop();
-      Provider.of<UpdateManager>(context).refresh();
-    }else{
+    if (RulesJson.formJson(obj.rule).isSingle) {
+      DatabaseCollection db = new DatabaseCollection();
+      await db.deleteToDo(obj.id).whenComplete(() {
+        Provider.of<UpdateManager>(context).refresh();
+        Navigator.of(context).pop();
+      });
+    } else {
       ToDos updatedToDo = ToDos(
-        id: obj.id,
-        name: obj.name,
-        rule: RulesJson.getJson(
-            rule: RulesJson.formJson(obj.rule)
-                .setDone(RulesJson.formJson(obj.rule))),
-        piority: obj.piority);
-    DatabaseCollection db = new DatabaseCollection();
-    await db.updateToDo(updatedToDo).whenComplete(() {
-      Provider.of<UpdateManager>(context).refresh();
-      Navigator.of(context).pop();
-    });
+          id: obj.id,
+          name: obj.name,
+          rule: RulesJson.getJson(
+              rule: RulesJson.formJson(obj.rule)
+                  .setDone(RulesJson.formJson(obj.rule))),
+          piority: obj.piority);
+      DatabaseCollection db = new DatabaseCollection();
+      await db.updateToDo(updatedToDo).whenComplete(() {
+        Provider.of<UpdateManager>(context).refresh();
+        Navigator.of(context).pop();
+      });
     }
   }
 

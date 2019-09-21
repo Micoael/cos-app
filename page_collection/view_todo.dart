@@ -17,6 +17,7 @@ class ToDoViewer extends StatefulWidget {
 }
 
 class _ToDoViewerState extends State<ToDoViewer> {
+  int painterPointer=0;
   int id = 0;
   List<List<ToDos>> parceledList;
   @override
@@ -108,12 +109,14 @@ class _ToDoViewerState extends State<ToDoViewer> {
 
     List<ToDos> targetList = [];
 
-    //TODO: fix this.
-
     if (Provider.of<UpdateManager>(context).isUpdate) {
-      
       targetList = ToDoItemFilter().clean(parceledList)[index];
-      Provider.of<UpdateManager>(context).understood();
+      painterPointer++;
+      if(painterPointer==4){
+        Provider.of<UpdateManager>(context).understood();
+        painterPointer=0;
+      }
+      
     } else {
       targetList = ToDoItemFilter().clean(widget.parceledList)[index];
     }

@@ -1,12 +1,10 @@
 import 'package:cos_method/helper/database.dart';
-import 'package:cos_method/helper/rule_corvent.dart';
 import 'package:cos_method/model/rule.dart';
 import 'package:cos_method/model/todo.dart';
 import 'package:cos_method/notifier/update_schedule.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:sqflite/sqflite.dart';
 
 class AddToDoPage extends StatefulWidget {
   @override
@@ -147,7 +145,7 @@ class _AddToDoPageState extends State<AddToDoPage> {
                   onPressed: () {
                     addRepeatFormKey.currentState.save();
                     if (duration > 0 && last > 0) {
-                      if (duration > last) {
+                      if (duration >= last) {
                         multiRepeatList.add([duration, last]);
                       }
                     } else {
@@ -290,9 +288,9 @@ class _AddToDoPageState extends State<AddToDoPage> {
                 child: Text('Add to list'),
                 onPressed: () {
                   addToDosFormKey2.currentState.save();
-                  if (duration > 0 && last > 0) {
+                  if (duration >= 0 && last >= 0) {
                     setState(() {});
-                    if (duration > last) {
+                    if (duration >= last) {
                       List<dynamic> list =[];
                       list.add([duration,last]);
                       multiRepeatList.add([duration,last]);
